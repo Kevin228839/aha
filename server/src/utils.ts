@@ -21,7 +21,10 @@ const sendEmail = async (reciever: string) => {
   await apiInstance.sendTransacEmail(sendSmtpEmail);
 };
 
-const testPassword = (password: string): boolean => {
+const testPassword = (password: string, passwordCheck: string): boolean => {
+  if (password !== passwordCheck) {
+    return false;
+  }
   const re =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[a-zA-Z\d#$@!%&*?]{8,}$/;
   return re.test(password);

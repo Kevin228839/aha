@@ -8,20 +8,40 @@ const emailSignUP = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    if (testPassword(req.body.password)) {
+    if (testPassword(req.body.password, req.body.passwordCheck)) {
       if (!(await checkEmailExist(req.body))) {
-        await registerEmail(req.body);
         await sendEmail(req.body.email);
-        res.status(200).json({message: 'Sign UP Success'});
+        await registerEmail(req.body);
+        res.status(200).json({
+          message:
+            'Sign Up Success. A verification email is sent to your email account.',
+        });
       } else {
-        res.status(400).json({message: 'Already Signed Up'});
+        res.status(400).json({message: 'You have already signed up.'});
       }
     } else {
-      res.status(400).json({message: 'Invalid Password'});
+      res
+        .status(400)
+        .json({message: 'Invalid Password or Password Check Failed.'});
     }
   } catch (err) {
     next(err);
   }
 };
 
-export {emailSignUP};
+const resendVerifcationEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    await sendEmail(req.query.email as string);
+    res.status(200).json({
+      message: 'A verification email is sent to your email account.',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export {emailSignUP, resendVerifcationEmail};
