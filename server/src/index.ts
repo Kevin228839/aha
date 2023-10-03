@@ -1,5 +1,4 @@
 import express, {NextFunction, Request, Response} from 'express';
-import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import https from 'https';
 import fs from 'fs';
@@ -7,11 +6,7 @@ import path from 'path';
 import {router} from './router';
 const app = express();
 const port = 8000;
-const corsOption = {
-  origin: ['http://localhost:3000'],
-  credentials: true,
-};
-app.use(cors(corsOption));
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
