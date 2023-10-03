@@ -16,19 +16,16 @@ const api = {
       method: 'POST',
       headers: new Headers({'Content-Type': 'application/json'}),
       body: JSON.stringify({email, password}),
-      credentials: 'include',
     });
   },
   checkAutoAuthentication: function() {
     return fetch(`${this.protocol}://${this.hostname}/api/v1/signin/autoauthentication`, {
       method: 'POST',
-      credentials: 'include',
     });
   },
   userSignOut: function() {
     return fetch(`${this.protocol}://${this.hostname}/api/v1/signout/usersignout`, {
       method: 'DELETE',
-      credentials: 'include',
     });
   },
   getDashboardUserList: function() {
@@ -42,7 +39,6 @@ const api = {
       method: 'PUT',
       headers: new Headers({'Content-Type': 'application/json'}),
       body: JSON.stringify({newName}),
-      credentials: 'include',
     });
   },
   setNewPassword: function(oldPassword, newPassword, newPasswordCheck) {
@@ -50,7 +46,6 @@ const api = {
       method: 'PUT',
       headers: new Headers({'Content-Type': 'application/json'}),
       body: JSON.stringify({oldPassword, newPassword, newPasswordCheck}),
-      credentials: 'include',
     });
   },
 };

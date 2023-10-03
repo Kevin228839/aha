@@ -208,14 +208,12 @@ const changeUserName = async (email: string, type: string, name: string) => {
 const changeUserPassword = async (email: string, newPassword: string) => {
   const conn = await pool.getConnection();
   try {
-    console.log(email);
     const saltRound = parseInt(process.env.bcrypt_salt as string);
     const newPasswordHash = bcrypt.hashSync(newPassword.toString(), saltRound);
     await conn.query(
       "UPDATE user_info SET password_hash=? WHERE email=? and type='email'",
       [newPasswordHash, email]
     );
-    console.log('132');
   } catch (err) {
     await conn.query('ROLLBACK');
     throw err;
