@@ -53,9 +53,12 @@ const DashBoard = () => {
           {userStatistics.average_active_user}
         </Center>
       </SimpleGrid>
-      <SimpleGrid m='20px' columns='4' spacing='10'>
+      <SimpleGrid m='20px' columns='5' spacing='10'>
         <Center bg='gray.100' h='50px' w='250px'>
           email
+        </Center>
+        <Center bg='gray.100' h='50px' w='250px'>
+          Account type
         </Center>
         <Center bg='gray.100' h='50px' w='250px'>
           TS of user sign up
@@ -70,9 +73,12 @@ const DashBoard = () => {
       {
         userList.map((user, index) => {
           return (
-            <SimpleGrid m='20px' key={index} columns='4' spacing='10'>
+            <SimpleGrid m='20px' key={index} columns='5' spacing='10'>
               <Center bg='gray.100' h='50px' w='250px'>
                 {user.email}
+              </Center>
+              <Center bg='gray.100' h='50px' w='250px'>
+                {user.type}
               </Center>
               <Center bg='gray.100' h='50px' w='250px'>
                 {user.signup_ts}

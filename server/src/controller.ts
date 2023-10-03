@@ -1,8 +1,7 @@
 import {Request, Response, NextFunction} from 'express';
 import {
   checkEmailAccountExist,
-  checkGoogleAccountExist,
-  registerEmail,
+  createEmailAccount,
   setEmailAccountAsVerified,
   getEmailUserInfo,
   checkSignInEmail,
@@ -13,6 +12,10 @@ import {
   getDashBoardStatistics,
   changeUserName,
   changeUserPassword,
+  checkGoogleOauthAccountExist,
+  createGoogleOAuthAccount,
+  updateGoogleOAuthAccount,
+  getGoogleUserInfo,
 } from './model';
 import {
   sendEmail,
@@ -20,6 +23,8 @@ import {
   testPassword,
   createAuthenticationToken,
   verifyAuthenticationToken,
+  getGoogleOAuthToken,
+  getGoogleUser,
 } from './utils';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -31,16 +36,10 @@ const emailSignUp = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    if (await checkGoogleAccountExist(req.body.email)) {
-      res
-        .status(400)
-        .json({message: 'The email has already been used in Google OAuth.'});
-      return;
-    }
     if (testPassword(req.body.password, req.body.passwordCheck)) {
       if (!(await checkEmailAccountExist(req.body.email))) {
         await sendEmail(req.body.email);
-        await registerEmail(req.body);
+        await createEmailAccount(req.body);
         res.status(200).json({
           message:
             'Sign Up Success. A verification email is sent to your email account.',
@@ -94,7 +93,7 @@ const verifyEmail = async (
             secure: false,
           }
         );
-        res.redirect(process.env.frontend_dashboard_path as string);
+        res.redirect(process.env.frontend_path as string);
       } else {
         res.status(400).json({message: "The email account doesn't exist."});
       }
@@ -280,6 +279,38 @@ const changePassword = async (
   }
 };
 
+const googleOAuth = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const code = req.query.code;
+    const {id_token, access_token} = await getGoogleOAuthToken(code as string);
+    const userData = await getGoogleUser(id_token, access_token);
+    if (!(await checkGoogleOauthAccountExist(userData.email))) {
+      await createGoogleOAuthAccount(userData.email, userData.name);
+    } else {
+      await updateGoogleOAuthAccount(userData.email);
+    }
+    const userInfo = await getGoogleUserInfo(userData.email);
+    const authenticationJWT = createAuthenticationToken(userInfo);
+    res.cookie(
+      process.env.authentication_token_name as string,
+      authenticationJWT,
+      {
+        httpOnly: true,
+        sameSite: 'strict',
+        maxAge: 60 * 30 * 1000,
+        secure: false,
+      }
+    );
+    res.redirect(process.env.frontend_path as string);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export {
   emailSignUp,
   resendVerifcationEmail,
@@ -291,4 +322,5 @@ export {
   dashBoardUserStatistics,
   changeName,
   changePassword,
+  googleOAuth,
 };

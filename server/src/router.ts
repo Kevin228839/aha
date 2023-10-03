@@ -10,6 +10,7 @@ import {
   dashBoardUserStatistics,
   changeName,
   changePassword,
+  googleOAuth,
 } from './controller';
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.get('/api/v1/signup/verifyemail', verifyEmail);
 router.post('/api/v1/signin/email', emailSignIn);
 router.post('/api/v1/signin/autoauthentication', autoAuthentication);
 router.delete('/api/v1/signout/usersignout', signOut);
+router.get('/api/v1/oauth/google', googleOAuth);
 router.get('/api/v1/dashboard/userlist', dashBoardUserList);
 router.get('/api/v1/dashboard/userstatistics', dashBoardUserStatistics);
 router.put('/api/v1/profile/changename', changeName);

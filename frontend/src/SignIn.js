@@ -1,7 +1,12 @@
-import {Center, Input, Button, Spinner, useToast} from '@chakra-ui/react';
+import {
+  Center, Input, Button,
+  Spinner, useToast, Divider,
+} from '@chakra-ui/react';
+import {FcGoogle} from 'react-icons/fc';
 import {useRef, useState, useContext} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, Link} from 'react-router-dom';
 import {UserContext} from './userContext';
+import {getGoogleOAuthURL} from './utils';
 import api from './api';
 
 const SignIn = () => {
@@ -54,6 +59,12 @@ const SignIn = () => {
         setLoading(false);
       }}>Sign In</Button>:
       <Spinner />}
+      <Divider m='20px'/>
+      <Link to={getGoogleOAuthURL()}>
+        <Button color='BlackAlpha 100' leftIcon={<FcGoogle />}>
+            Continue with Google
+        </Button>
+      </Link>
     </Center>
   );
 };

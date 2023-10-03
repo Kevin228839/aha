@@ -23,24 +23,7 @@ const checkEmailAccountExist = async (email: string): Promise<boolean> => {
   }
 };
 
-const checkGoogleAccountExist = async (email: string): Promise<boolean> => {
-  const conn = await pool.getConnection();
-  try {
-    const [data] = await conn.query<RowDataPacket[]>(
-      "SELECT COUNT(*) FROM user_info WHERE type='google' and email=?",
-      [email]
-    );
-    if (data[0]['COUNT(*)'] === 0) {
-      return false;
-    } else {
-      return true;
-    }
-  } finally {
-    conn.release();
-  }
-};
-
-const registerEmail = async (
+const createEmailAccount = async (
   requestBody: EmailSignupPayload
 ): Promise<void> => {
   const conn = await pool.getConnection();
@@ -179,7 +162,7 @@ const getDashBoardUserList = async (): Promise<RowDataPacket[]> => {
   const conn = await pool.getConnection();
   try {
     const [data] = await conn.query<RowDataPacket[]>(
-      'SELECT email, signup_ts, login_times, lastsession_ts FROM user_info'
+      'SELECT email, type, signup_ts, login_times, lastsession_ts FROM user_info'
     );
     return data;
   } finally {
@@ -241,10 +224,74 @@ const changeUserPassword = async (email: string, newPassword: string) => {
   }
 };
 
+const checkGoogleOauthAccountExist = async (email: string) => {
+  const conn = await pool.getConnection();
+  try {
+    const [data] = await conn.query<RowDataPacket[]>(
+      "SELECT COUNT(*) FROM user_info WHERE type='google' and email=?",
+      [email]
+    );
+    if (data[0]['COUNT(*)'] === 0) {
+      return false;
+    } else {
+      return true;
+    }
+  } finally {
+    conn.release();
+  }
+};
+
+const createGoogleOAuthAccount = async (
+  email: string,
+  name: string
+): Promise<void> => {
+  const conn = await pool.getConnection();
+  try {
+    await conn.query(
+      "INSERT INTO user_info(type, email, name, signup_ts, login_times) VALUES ('google', ?, ?, CURRENT_TIMESTAMP(), 1)",
+      [email, name]
+    );
+    await conn.query('COMMIT');
+  } catch (err) {
+    await conn.query('ROLLBACK');
+    throw err;
+  } finally {
+    conn.release();
+  }
+};
+
+const updateGoogleOAuthAccount = async (email: string): Promise<void> => {
+  const conn = await pool.getConnection();
+  try {
+    await conn.query(
+      "UPDATE user_info SET login_times=login_times+1 WHERE type='google' and email=?",
+      [email]
+    );
+    await conn.query('COMMIT');
+  } catch (err) {
+    await conn.query('ROLLBACK');
+    throw err;
+  } finally {
+    conn.release();
+  }
+};
+
+const getGoogleUserInfo = async (email: string): Promise<object> => {
+  const conn = await pool.getConnection();
+  try {
+    const [data] = await conn.query<RowDataPacket[]>(
+      "SELECT id, type, email, name FROM user_info WHERE type='google' and email=?",
+      [email]
+    );
+    return data[0];
+  } finally {
+    conn.release();
+  }
+};
+
 export {
   checkEmailAccountExist,
-  checkGoogleAccountExist,
-  registerEmail,
+  createEmailAccount,
   setEmailAccountAsVerified,
   getEmailUserInfo,
   checkSignInEmail,
@@ -255,4 +302,8 @@ export {
   getDashBoardStatistics,
   changeUserName,
   changeUserPassword,
+  checkGoogleOauthAccountExist,
+  createGoogleOAuthAccount,
+  updateGoogleOAuthAccount,
+  getGoogleUserInfo,
 };

@@ -2,6 +2,8 @@ const brevo = require('@getbrevo/brevo');
 import dotenv from 'dotenv';
 import path from 'path';
 import jwt, {JwtPayload} from 'jsonwebtoken';
+import axios from 'axios';
+import qs from 'qs';
 dotenv.config({path: path.resolve(__dirname, '../.env')});
 
 const sendEmail = async (receiver: string): Promise<void> => {
@@ -65,10 +67,41 @@ const verifyAuthenticationToken = (token: string): JwtPayload => {
   }
 };
 
+const getGoogleOAuthToken = async (code: string) => {
+  const url = 'https://oauth2.googleapis.com/token';
+  const value = {
+    code,
+    client_id: process.env.google_oauth_client_id,
+    client_secret: process.env.google_oauth_client_secret,
+    redirect_uri: process.env.google_oauth_redirect_uri,
+    grant_type: 'authorization_code',
+  };
+  const data = await axios.post(url, qs.stringify(value), {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  });
+  return data.data;
+};
+
+const getGoogleUser = async (id_token: string, access_token: string) => {
+  const data = await axios.get(
+    `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
+    {
+      headers: {
+        Authorization: `Bearer ${id_token}`,
+      },
+    }
+  );
+  return data.data;
+};
+
 export {
   sendEmail,
   verifyEmailToken,
   testPassword,
   createAuthenticationToken,
   verifyAuthenticationToken,
+  getGoogleOAuthToken,
+  getGoogleUser,
 };
