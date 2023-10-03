@@ -20,7 +20,7 @@ const SignUp = () => {
         {loading === false ?
       <Button onClick={async () => {
         setLoading(true);
-        let data = await api.emailSignUP(
+        let data = await api.emailSignUp(
             emailRef.current.value,
             passwordRef.current.value,
             passwordCheckRef.current.value,
