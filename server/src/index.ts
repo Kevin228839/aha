@@ -3,9 +3,13 @@ import cookieParser from 'cookie-parser';
 import https from 'https';
 import fs from 'fs';
 import path from 'path';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json';
 import {router} from './router';
 const app = express();
 const port = 8000;
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));

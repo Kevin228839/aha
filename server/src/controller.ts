@@ -24,7 +24,6 @@ import {
   createAuthenticationToken,
   verifyAuthenticationToken,
   getGoogleOAuthToken,
-  getGoogleUser,
 } from './utils';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -79,6 +78,10 @@ const verifyEmail = async (
 ): Promise<void> => {
   try {
     const email = verifyEmailToken(req.query.token as string);
+    if (email === undefined) {
+      res.status(400).json({message: 'Invalid token.'});
+      return;
+    }
     if (!(await checkEmailAccountExist(email))) {
       if (await setEmailAccountAsVerified(email)) {
         const userInfo = await getEmailUserInfo(email);
@@ -90,7 +93,6 @@ const verifyEmail = async (
             httpOnly: true,
             sameSite: 'strict',
             maxAge: 60 * 30 * 1000,
-            secure: false,
           }
         );
         res.redirect(process.env.frontend_path as string);
@@ -125,7 +127,6 @@ const emailSignIn = async (
             httpOnly: true,
             sameSite: 'strict',
             maxAge: 60 * 30 * 1000,
-            secure: false,
           }
         );
         res.status(200).json({message: 'Login Success.', data: userInfo});
@@ -151,7 +152,7 @@ const autoAuthentication = async (
     const userInfo = verifyAuthenticationToken(
       req.cookies[process.env.authentication_token_name as string]
     );
-    if (Object.keys(userInfo).length !== 0) {
+    if (userInfo !== undefined) {
       await updateLastSessionTS(userInfo.type, userInfo.email);
       res
         .status(200)
@@ -176,26 +177,46 @@ const signOut = (_req: Request, res: Response, next: NextFunction): void => {
 };
 
 const dashBoardUserList = async (
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
+    const userInfo = verifyAuthenticationToken(
+      req.cookies[process.env.authentication_token_name as string]
+    );
+    if (userInfo === undefined) {
+      res.cookie(process.env.authentication_token_name as string, '', {
+        maxAge: 0,
+      });
+      res.status(400).json({message: 'The authentication token is invalid.'});
+      return;
+    }
     const userList = await getDashBoardUserList();
-    res.status(200).json({message: userList});
+    res.status(200).json({data: userList});
   } catch (err) {
     next(err);
   }
 };
 
 const dashBoardUserStatistics = async (
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
+    const userInfo = verifyAuthenticationToken(
+      req.cookies[process.env.authentication_token_name as string]
+    );
+    if (userInfo === undefined) {
+      res.cookie(process.env.authentication_token_name as string, '', {
+        maxAge: 0,
+      });
+      res.status(400).json({message: 'The authentication token is invalid.'});
+      return;
+    }
     const userStatisitcs = await getDashBoardStatistics();
-    res.status(200).json({message: userStatisitcs});
+    res.status(200).json({data: userStatisitcs});
   } catch (err) {
     next(err);
   }
@@ -210,7 +231,7 @@ const changeName = async (
     const userInfo = verifyAuthenticationToken(
       req.cookies[process.env.authentication_token_name as string]
     );
-    if (Object.keys(userInfo).length === 0) {
+    if (userInfo === undefined) {
       res.cookie(process.env.authentication_token_name as string, '', {
         maxAge: 0,
       });
@@ -236,10 +257,9 @@ const changeName = async (
         httpOnly: true,
         sameSite: 'strict',
         maxAge: 60 * 30 * 1000,
-        secure: false,
       }
     );
-    res.status(200).json({message: 'Login Success.', data: newUserInfo});
+    res.status(200).json({message: 'Change name success.', data: newUserInfo});
   } catch (err) {
     next(err);
   }
@@ -254,7 +274,7 @@ const changePassword = async (
     const userInfo = verifyAuthenticationToken(
       req.cookies[process.env.authentication_token_name as string]
     );
-    if (Object.keys(userInfo).length === 0) {
+    if (userInfo === undefined) {
       res.cookie(process.env.authentication_token_name as string, '', {
         maxAge: 0,
       });
@@ -286,8 +306,11 @@ const googleOAuth = async (
 ): Promise<void> => {
   try {
     const code = req.query.code;
-    const {id_token, access_token} = await getGoogleOAuthToken(code as string);
-    const userData = await getGoogleUser(id_token, access_token);
+    const userData = await getGoogleOAuthToken(code as string);
+    if (userData === undefined) {
+      res.status(400).json({message: 'Invalid google oauth code'});
+      return;
+    }
     if (!(await checkGoogleOauthAccountExist(userData.email))) {
       await createGoogleOAuthAccount(userData.email, userData.name);
     } else {
@@ -302,7 +325,6 @@ const googleOAuth = async (
         httpOnly: true,
         sameSite: 'strict',
         maxAge: 60 * 30 * 1000,
-        secure: false,
       }
     );
     res.redirect(process.env.frontend_path as string);

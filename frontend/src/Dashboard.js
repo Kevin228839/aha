@@ -15,11 +15,17 @@ const DashBoard = () => {
     }
     const fetchData = async () => {
       let data1 = await api.getDashboardUserList();
+      const status1 = data1.status;
       data1 = await data1.json();
       let data2 = await api.getDashboardUserStatistics();
+      const status2 = data2.status;
       data2 = await data2.json();
-      setUserList(data1.message);
-      setUserStatistics(data2.message);
+      if (status1 !== 200 || status2 != 200) {
+        window.location.reload();
+        return;
+      }
+      setUserList(data1.data);
+      setUserStatistics(data2.data);
     };
     fetchData();
   }, []);
