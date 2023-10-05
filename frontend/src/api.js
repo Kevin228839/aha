@@ -19,12 +19,10 @@ const api = {
     });
   },
   checkAutoAuthentication: function() {
-    return fetch(`${this.protocol}://${this.hostname}/api/v1/signin/autoauthentication`, {
-      method: 'POST',
-    });
+    return fetch(`${this.protocol}://${this.hostname}/api/v1/signin/autoauthentication`);
   },
   userSignOut: function() {
-    return fetch(`${this.protocol}://${this.hostname}/api/v1/signout/usersignout`, {
+    return fetch(`${this.protocol}://${this.hostname}/api/v1/signout`, {
       method: 'DELETE',
     });
   },
