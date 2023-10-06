@@ -1,779 +1,779 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "version": "1.0.0",
-    "title": "Aha backend exam",
-    "description": "My aha backend exam app"
+      "version": "1.0.0",
+      "title": "Aha backend exam",
+      "description": "My aha backend exam app"
   },
   "servers": [
-    {
-      "url":"https://localhost:8000/api/v1"
-    }
+      {
+          "url": "/api/v1"
+      }
   ],
-  "paths":{
-    "/signup/email":{
-      "post": {
-        "tags": ["user"],
-        "summary": "User sigup with email",
-        "requestBody": {
-          "required": "true",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "example": "example@gmail.com"
-                  },
-                  "password": {
-                    "type": "string",
-                    "example": "b%A12345s"
-                  },
-                  "passwordCheck": {
-                    "type": "string",
-                    "example": "b%A12345s"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The user successfully signed up with the email",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Sign Up Success. A verification email is sent to your email account."
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Failed to sign up",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "oneOf":[
-                    {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "You have already signed up"
-                        }
+  "paths": {
+      "/signup/email": {
+          "post": {
+              "tags": ["user"],
+              "summary": "User sigup with email",
+              "requestBody": {
+                  "required": "true",
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "email": {
+                                      "type": "string",
+                                      "example": "example@gmail.com"
+                                  },
+                                  "password": {
+                                      "type": "string",
+                                      "example": "b%A12345s"
+                                  },
+                                  "passwordCheck": {
+                                      "type": "string",
+                                      "example": "b%A12345s"
+                                  }
+                              }
+                          }
                       }
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "Invalid Password or Password Check Failed"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/signup/resendverificationemail": {
-      "get": {
-        "tags": ["user"],
-        "summary": "Resend verification email",
-        "parameters": [
-          {
-            "name": "email",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "example@gmail.com"
-            },
-            "description": "The email account to verify"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The verification email is resent",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "A new verification email is sent to your email account"
-                    }
                   }
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/signup/verifyemail": {
-      "get": {
-        "tags":["user"],
-        "summary": "Verify the email",
-        "parameters": [
-          {
-            "name": "token",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "iamajwttoken123123123"
-            },
-            "description": "The token is used to verify the email account"
-          }
-        ],
-        "responses": {
-          "302": {
-            "description": "Email is verified. The user is redirected to the web page with authentication cookie",
-            "headers": {
-              "Set-Cookie": {
-                "schema": {
-                  "type": "string",
-                  "example": "mycookie=123123123123; HttpOnly=true; MaxAge=60*30*1000; SameSite='strict'"
-                }
               },
-              "Location": {
-                "schema": {
-                  "type": "string",
-                  "example": "https://mywebpage.com"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Failed to verify the email",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "oneOf":[
-                    {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "Invalid token"
-                        }
+              "responses": {
+                  "200": {
+                      "description": "The user successfully signed up with the email",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string",
+                                          "example": "Sign Up Success. A verification email is sent to your email account."
+                                      }
+                                  }
+                              }
+                          }
                       }
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "The email account doesn't exist"
-                        }
-                      }
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "The email account has already been verified"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/signin/email": {
-      "post": {
-        "tags":["user"],
-        "summary": "Sign in with email account",       
-        "requestBody": {
-          "required": "true",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "example": "example@gmail.com"
                   },
-                  "password": {
-                    "type": "string",
-                    "example": "b%A12345s"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses":{
-          "200": {
-            "description": "Login success",
-            "headers": {
-              "Set-Cookie": {
-                "schema": {
-                  "type": "string",
-                  "example": "mycookie=123123123123; HttpOnly=true; MaxAge=60*30*1000; SameSite='strict'"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Login Success"
-                    },
-                    "data":{
-                      "type": "object",
-                      "example": {
-                        "id": 1,
-                        "type": "email",
-                        "email": "example@gmail.com",
-                        "name": "default"
+                  "400": {
+                      "description": "Failed to sign up",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "oneOf": [
+                                      {
+                                          "type": "object",
+                                          "properties": {
+                                              "message": {
+                                                  "type": "string",
+                                                  "example": "You have already signed up"
+                                              }
+                                          }
+                                      },
+                                      {
+                                          "type": "object",
+                                          "properties": {
+                                              "message": {
+                                                  "type": "string",
+                                                  "example": "Invalid Password or Password Check Failed"
+                                              }
+                                          }
+                                      }
+                                  ]
+                              }
+                          }
                       }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Failed to sign in",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invalid password"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref":"#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/signin/autoauthentication": {
-      "get": {
-        "tags": ["user"],
-        "security": [
-          {"cookieAuth": []}
-        ],
-        "summary": "start a new session with authentication cookie",
-        "responses": {
-          "200": {
-            "description": "The authentication cookie is valid",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "The authentication token is valid"
-                    },
-                    "data":{
-                      "type": "object",
-                      "example": {
-                        "id": 1,
-                        "type": "email",
-                        "email": "example@gmail.com",
-                        "name": "Apple"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "The authentication token is invalid",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "The authentication token is invalid"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/signout":{
-      "delete": {
-        "tags": ["user"],
-        "summary": "Log out and delete authentication cookie",
-        "responses": {
-          "200": {
-            "description": "Logout success",
-            "headers": {
-              "Set-Cookie": {
-                "schema": {
-                  "type": "string",
-                  "example": "mycookie=; MaxAge=0"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Logout Success"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref":"#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/oauth/google": {
-      "get": {
-        "tags": ["oauth"],
-        "summary": "Google OAuth",
-        "parameters": [
-          {
-            "name": "code",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "123123132123"
-            },
-            "description": "Google OAuth code"
-          }
-        ], 
-        "responses": {
-          "302": {
-            "description": "Get user information from google oauth. Redirct to web page",
-            "headers": {
-              "Location": {
-                "schema": {
-                  "type": "string",
-                  "example": "https://mywebpage.com"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Failed to acquire user data from google with the code",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invalid google oauth code"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref":"#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/profile/changename": {
-      "put": {
-        "tags": ["profile"],
-        "security": [
-          {"cookieAuth": []}
-        ],
-        "summary": "Change user name",
-        "requestBody": {
-          "required": "true",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "newName": {
-                    "type": "string",
-                    "example": "Apple"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Change name success",
-            "headers": {
-              "Set-Cookie": {
-                "schema": {
-                  "type": "string",
-                  "example": "mycookie=123123123123; HttpOnly=true; MaxAge=60*30*1000; SameSite='strict'"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Change name success"
-                    },
-                    "data":{
-                      "type": "object",
-                      "example": {
-                        "id": 1,
-                        "type": "email",
-                        "email": "example@gmail.com",
-                        "name": "Apple"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Failed to change name",
-            "headers": {
-              "Set-Cookie": {
-                "schema": {
-                  "type": "string",
-                  "example": "mycookie=; MaxAge=0"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "oneOf":[
-                    {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "The authentication token is invalid"
-                        }
-                      }
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "User name too short"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/profile/changepassword": {
-      "put": {
-        "tags": ["profile"],
-        "security": [
-          {"cookieAuth": []}
-        ],
-        "summary": "Change user password",
-        "requestBody": {
-          "required": "true",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "oldPassword": {
-                    "type": "string",
-                    "example": "b%A12345s"
                   },
-                  "newPassword": {
-                    "type": "string",
-                    "example": "c%A12345s"
+                  "500": {
+                      "$ref": "#/components/responses/ServerError"
+                  }
+              }
+          }
+      },
+      "/signup/resendverificationemail": {
+          "get": {
+              "tags": ["user"],
+              "summary": "Resend verification email",
+              "parameters": [
+                  {
+                      "name": "email",
+                      "in": "query",
+                      "schema": {
+                          "type": "string",
+                          "example": "example@gmail.com"
+                      },
+                      "description": "The email account to verify"
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "The verification email is resent",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string",
+                                          "example": "A new verification email is sent to your email account"
+                                      }
+                                  }
+                              }
+                          }
+                      }
                   },
-                  "newPasswordCheck": {
-                    "type": "string",
-                    "example": "c%A12345s"
+                  "500": {
+                      "$ref": "#/components/responses/ServerError"
                   }
-                }
               }
-            }
           }
-        },
-        "responses": {
-          "200": {
-            "description": "Change password success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Change password success"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Failed to change password",
-            "headers": {
-              "Set-Cookie": {
-                "schema": {
-                  "type": "string",
-                  "example": "mycookie=; MaxAge=0"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "oneOf":[
-                    {
-                      "type": "object",
-                      "properties": {
-                        "message": {
+      },
+      "/signup/verifyemail": {
+          "get": {
+              "tags": ["user"],
+              "summary": "Verify the email",
+              "parameters": [
+                  {
+                      "name": "token",
+                      "in": "query",
+                      "schema": {
                           "type": "string",
-                          "example": "The authentication token is invalid"
-                        }
+                          "example": "iamajwttoken123123123"
+                      },
+                      "description": "The token is used to verify the email account"
+                  }
+              ],
+              "responses": {
+                  "302": {
+                      "description": "Email is verified. The user is redirected to the web page with authentication cookie",
+                      "headers": {
+                          "Set-Cookie": {
+                              "schema": {
+                                  "type": "string",
+                                  "example": "mycookie=123123123123; HttpOnly=true; MaxAge=60*30*1000; SameSite='strict'"
+                              }
+                          },
+                          "Location": {
+                              "schema": {
+                                  "type": "string",
+                                  "example": "https://mywebpage.com"
+                              }
+                          }
                       }
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "message": {
+                  },
+                  "400": {
+                      "description": "Failed to verify the email",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "oneOf": [
+                                      {
+                                          "type": "object",
+                                          "properties": {
+                                              "message": {
+                                                  "type": "string",
+                                                  "example": "Invalid token"
+                                              }
+                                          }
+                                      },
+                                      {
+                                          "type": "object",
+                                          "properties": {
+                                              "message": {
+                                                  "type": "string",
+                                                  "example": "The email account doesn't exist"
+                                              }
+                                          }
+                                      },
+                                      {
+                                          "type": "object",
+                                          "properties": {
+                                              "message": {
+                                                  "type": "string",
+                                                  "example": "The email account has already been verified"
+                                              }
+                                          }
+                                      }
+                                  ]
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "$ref": "#/components/responses/ServerError"
+                  }
+              }
+          }
+      },
+      "/signin/email": {
+          "post": {
+              "tags": ["user"],
+              "summary": "Sign in with email account",
+              "requestBody": {
+                  "required": "true",
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "email": {
+                                      "type": "string",
+                                      "example": "example@gmail.com"
+                                  },
+                                  "password": {
+                                      "type": "string",
+                                      "example": "b%A12345s"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Login success",
+                      "headers": {
+                          "Set-Cookie": {
+                              "schema": {
+                                  "type": "string",
+                                  "example": "mycookie=123123123123; HttpOnly=true; MaxAge=60*30*1000; SameSite='strict'"
+                              }
+                          }
+                      },
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string",
+                                          "example": "Login Success"
+                                      },
+                                      "data": {
+                                          "type": "object",
+                                          "example": {
+                                              "id": 1,
+                                              "type": "email",
+                                              "email": "example@gmail.com",
+                                              "name": "default"
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "Failed to sign in",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string",
+                                          "example": "Invalid password"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "$ref": "#/components/responses/ServerError"
+                  }
+              }
+          }
+      },
+      "/signin/autoauthentication": {
+          "get": {
+              "tags": ["user"],
+              "security": [
+                  { "cookieAuth": [] }
+              ],
+              "summary": "start a new session with authentication cookie",
+              "responses": {
+                  "200": {
+                      "description": "The authentication cookie is valid",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string",
+                                          "example": "The authentication token is valid"
+                                      },
+                                      "data": {
+                                          "type": "object",
+                                          "example": {
+                                              "id": 1,
+                                              "type": "email",
+                                              "email": "example@gmail.com",
+                                              "name": "Apple"
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "The authentication token is invalid",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string",
+                                          "example": "The authentication token is invalid"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "$ref": "#/components/responses/ServerError"
+                  }
+              }
+          }
+      },
+      "/signout": {
+          "delete": {
+              "tags": ["user"],
+              "summary": "Log out and delete authentication cookie",
+              "responses": {
+                  "200": {
+                      "description": "Logout success",
+                      "headers": {
+                          "Set-Cookie": {
+                              "schema": {
+                                  "type": "string",
+                                  "example": "mycookie=; MaxAge=0"
+                              }
+                          }
+                      },
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string",
+                                          "example": "Logout Success"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "$ref": "#/components/responses/ServerError"
+                  }
+              }
+          }
+      },
+      "/oauth/google": {
+          "get": {
+              "tags": ["oauth"],
+              "summary": "Google OAuth",
+              "parameters": [
+                  {
+                      "name": "code",
+                      "in": "query",
+                      "schema": {
                           "type": "string",
-                          "example": "Old password is incorrect"
-                        }
+                          "example": "123123132123"
+                      },
+                      "description": "Google OAuth code"
+                  }
+              ],
+              "responses": {
+                  "302": {
+                      "description": "Get user information from google oauth. Redirct to web page",
+                      "headers": {
+                          "Location": {
+                              "schema": {
+                                  "type": "string",
+                                  "example": "https://mywebpage.com"
+                              }
+                          }
                       }
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "Re-entered password does not match or The new password is invalid"
-                        }
+                  },
+                  "400": {
+                      "description": "Failed to acquire user data from google with the code",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string",
+                                          "example": "Invalid google oauth code"
+                                      }
+                                  }
+                              }
+                          }
                       }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/dashboard/userlist": {
-      "get": {
-        "tags": ["dashboard"],
-        "security": [
-          {"cookieAuth": []}
-        ],
-        "summary": "Return user dashboard data",
-        "responses": {
-          "200": {
-            "description": "An array of user data is returned",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "example": [{
-                        "email": "example@gmail.com",
-                        "type": "google",
-                        "signup_ts": "2023-10-01T00:00:00.000Z",
-                        "login_times": 1,
-                        "lastsession_ts": "2023-10-01T00:01:00.000Z"
-                      }]
-                    }
+                  },
+                  "500": {
+                      "$ref": "#/components/responses/ServerError"
                   }
-                }
               }
-            }
-          },
-          "400": {
-            "description": "The authentication token is invalid",
-            "headers": {
-              "Set-Cookie": {
-                "schema": {
-                  "type": "string",
-                  "example": "mycookie=; MaxAge=0"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "The authentication token is invalid"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
           }
-        }
-      }
-    },
-    "/dashboard/userstatistics": {
-      "get": {
-        "tags": ["dashboard"],
-        "security": [
-          {"cookieAuth": []}
-        ],
-        "summary": "Return user statistics data",
-        "responses": {
-          "200": {
-            "description": "An object of user statistics is returned",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "example": {
-                        "total_sign_up_user": 0,
-                        "today_active_user": 0,
-                        "average_active_user": "0"
+      },
+      "/profile/changename": {
+          "put": {
+              "tags": ["profile"],
+              "security": [
+                  { "cookieAuth": [] }
+              ],
+              "summary": "Change user name",
+              "requestBody": {
+                  "required": "true",
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "newName": {
+                                      "type": "string",
+                                      "example": "Apple"
+                                  }
+                              }
+                          }
                       }
-                    }
                   }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "The authentication token is invalid",
-            "headers": {
-              "Set-Cookie": {
-                "schema": {
-                  "type": "string",
-                  "example": "mycookie=; MaxAge=0"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "The authentication token is invalid"
-                    }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Change name success",
+                      "headers": {
+                          "Set-Cookie": {
+                              "schema": {
+                                  "type": "string",
+                                  "example": "mycookie=123123123123; HttpOnly=true; MaxAge=60*30*1000; SameSite='strict'"
+                              }
+                          }
+                      },
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string",
+                                          "example": "Change name success"
+                                      },
+                                      "data": {
+                                          "type": "object",
+                                          "example": {
+                                              "id": 1,
+                                              "type": "email",
+                                              "email": "example@gmail.com",
+                                              "name": "Apple"
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "Failed to change name",
+                      "headers": {
+                          "Set-Cookie": {
+                              "schema": {
+                                  "type": "string",
+                                  "example": "mycookie=; MaxAge=0"
+                              }
+                          }
+                      },
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "oneOf": [
+                                      {
+                                          "type": "object",
+                                          "properties": {
+                                              "message": {
+                                                  "type": "string",
+                                                  "example": "The authentication token is invalid"
+                                              }
+                                          }
+                                      },
+                                      {
+                                          "type": "object",
+                                          "properties": {
+                                              "message": {
+                                                  "type": "string",
+                                                  "example": "User name too short"
+                                              }
+                                          }
+                                      }
+                                  ]
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "$ref": "#/components/responses/ServerError"
                   }
-                }
               }
-            }
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
           }
-        }
+      },
+      "/profile/changepassword": {
+          "put": {
+              "tags": ["profile"],
+              "security": [
+                  { "cookieAuth": [] }
+              ],
+              "summary": "Change user password",
+              "requestBody": {
+                  "required": "true",
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "oldPassword": {
+                                      "type": "string",
+                                      "example": "b%A12345s"
+                                  },
+                                  "newPassword": {
+                                      "type": "string",
+                                      "example": "c%A12345s"
+                                  },
+                                  "newPasswordCheck": {
+                                      "type": "string",
+                                      "example": "c%A12345s"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Change password success",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string",
+                                          "example": "Change password success"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "Failed to change password",
+                      "headers": {
+                          "Set-Cookie": {
+                              "schema": {
+                                  "type": "string",
+                                  "example": "mycookie=; MaxAge=0"
+                              }
+                          }
+                      },
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "oneOf": [
+                                      {
+                                          "type": "object",
+                                          "properties": {
+                                              "message": {
+                                                  "type": "string",
+                                                  "example": "The authentication token is invalid"
+                                              }
+                                          }
+                                      },
+                                      {
+                                          "type": "object",
+                                          "properties": {
+                                              "message": {
+                                                  "type": "string",
+                                                  "example": "Old password is incorrect"
+                                              }
+                                          }
+                                      },
+                                      {
+                                          "type": "object",
+                                          "properties": {
+                                              "message": {
+                                                  "type": "string",
+                                                  "example": "Re-entered password does not match or The new password is invalid"
+                                              }
+                                          }
+                                      }
+                                  ]
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "$ref": "#/components/responses/ServerError"
+                  }
+              }
+          }
+      },
+      "/dashboard/userlist": {
+          "get": {
+              "tags": ["dashboard"],
+              "security": [
+                  { "cookieAuth": [] }
+              ],
+              "summary": "Return user dashboard data",
+              "responses": {
+                  "200": {
+                      "description": "An array of user data is returned",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "data": {
+                                          "type": "array",
+                                          "example": [{
+                                                  "email": "example@gmail.com",
+                                                  "type": "google",
+                                                  "signup_ts": "2023-10-01T00:00:00.000Z",
+                                                  "login_times": 1,
+                                                  "lastsession_ts": "2023-10-01T00:01:00.000Z"
+                                              }]
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "The authentication token is invalid",
+                      "headers": {
+                          "Set-Cookie": {
+                              "schema": {
+                                  "type": "string",
+                                  "example": "mycookie=; MaxAge=0"
+                              }
+                          }
+                      },
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string",
+                                          "example": "The authentication token is invalid"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "$ref": "#/components/responses/ServerError"
+                  }
+              }
+          }
+      },
+      "/dashboard/userstatistics": {
+          "get": {
+              "tags": ["dashboard"],
+              "security": [
+                  { "cookieAuth": [] }
+              ],
+              "summary": "Return user statistics data",
+              "responses": {
+                  "200": {
+                      "description": "An object of user statistics is returned",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "data": {
+                                          "type": "object",
+                                          "example": {
+                                              "total_sign_up_user": 0,
+                                              "today_active_user": 0,
+                                              "average_active_user": "0"
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "The authentication token is invalid",
+                      "headers": {
+                          "Set-Cookie": {
+                              "schema": {
+                                  "type": "string",
+                                  "example": "mycookie=; MaxAge=0"
+                              }
+                          }
+                      },
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string",
+                                          "example": "The authentication token is invalid"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "$ref": "#/components/responses/ServerError"
+                  }
+              }
+          }
       }
-    }
   },
   "components": {
-    "responses": {
-      "ServerError": {
-        "description": "Internal server error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ServerError"
-            }
+      "responses": {
+          "ServerError": {
+              "description": "Internal server error",
+              "content": {
+                  "application/json": {
+                      "schema": {
+                          "$ref": "#/components/schemas/ServerError"
+                      }
+                  }
+              }
           }
-        }        
-      }
-    },
-    "schemas": {
-      "ServerError": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "example": "Oops! Server Error"
+      },
+      "schemas": {
+          "ServerError": {
+              "type": "object",
+              "properties": {
+                  "message": {
+                      "type": "string",
+                      "example": "Oops! Server Error"
+                  }
+              }
           }
-        }
+      },
+      "securitySchemes": {
+          "cookieAuth": {
+              "type": "apiKey",
+              "in": "cookie",
+              "name": "aha_exam"
+          }
       }
-    },
-    "securitySchemes": {
-      "cookieAuth":{
-        "type": "apiKey",
-        "in": "cookie",
-        "name": "aha_exam"
-      }
-    }
   }
 }

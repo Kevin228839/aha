@@ -98,7 +98,6 @@ const getGoogleOAuthToken = async (
         },
       }
     );
-    console.log(userData.data);
     return userData.data;
   } catch (err) {
     return undefined;

@@ -1,0 +1,7 @@
+**/.git
+**/.DS_Store
+**/.env
+**/*.pem
+**/node_modules
+**/build
+**/ssl

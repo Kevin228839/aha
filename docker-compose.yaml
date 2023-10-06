@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    image: 'app'
+    container_name: app1
+    tty: true
+    stdin_open: true
+    ports:
+      - 3306:3306
+    volumes: 
+      - type : bind
+        source : ./config/server.env
+        target : /myapp/server/.env
+      - type: bind
+        source : ./config/frontend.env
+        target : /myapp/frontend/.env
+      - type : bind
+        source : ./ssl
+        target : /myapp/ssl
+    networks:
+      - net1
+  nginx:
+    image: nginx
+    container_name: nginx1
+    depends_on:
+      - app
+    ports:
+      - 443:443
+    volumes:
+      - type : bind
+        source : ./ssl
+        target : /etc/ssl/app
+      - type : bind
+        source : ./config/nginx.conf
+        target : /etc/nginx/conf.d/default.conf
+    networks:
+      - net1
+
+networks:
+  net1:
+    

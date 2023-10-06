@@ -1,5 +1,6 @@
 .DS_Store
-.env
-.pem
+*.env
+*.pem
+*.conf
 node_modules/
 build/
