@@ -772,7 +772,7 @@
           "cookieAuth": {
               "type": "apiKey",
               "in": "cookie",
-              "name": "aha_exam"
+              "name": "aha_login"
           }
       }
   }
